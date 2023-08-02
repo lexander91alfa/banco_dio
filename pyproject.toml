@@ -8,6 +8,8 @@ packages = [{include = "banco_dio"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+pytest = "^7.4.0"
+pytest-mock = "^3.11.1"
 
 
 [build-system]

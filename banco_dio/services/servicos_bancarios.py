@@ -1,14 +1,16 @@
-from banco_dio.db.banco_repository import salvar_transacao, buscar_conta, listar_contas, inserir_usuario, criar_conta, buscar_usuario, listar_transacoes
+from banco_dio.db.banco_repository import salvar_transacao, buscar_conta, listar_contas, inserir_usuario, criar_conta, buscar_usuario, listar_transacoes, atualizar_saldo
+from random import randint
 
-
-def nova_conta(numero: int, saldo: float, cpf: str) -> bool:
+def nova_conta(cpf: str) -> bool:
     usuario = buscar_usuario(cpf)
 
     if usuario is None:
-        print("Usuário não encontrado, favor cadastrar antes de criar uma conta!")
         return False
     
-    criar_conta(numero, saldo, usuario[0])
+    numero_conta = randint(1000, 9999)
+
+
+    criar_conta(numero_conta, 0, usuario[0])
     return True
 
 def listar_contas_service() -> list:
@@ -21,11 +23,7 @@ def login(numero_conta: int) -> tuple:
 
     conta = buscar_conta(numero_conta)
 
-    if conta is None:
-        print("Conta não encontrada!")
-        return None
-
-    return conta
+    return conta if conta is not None else None
 
 def sacar(numero_conta: int, valor: float) -> None:
     conta = buscar_conta(numero_conta)
@@ -56,15 +54,12 @@ def sacar(numero_conta: int, valor: float) -> None:
 def depositar(numero_conta: int, valor: float) -> None:
     conta = buscar_conta(numero_conta)
 
-    if conta is None:
-        print("Conta não encontrada!")
-        return
+    valor_atualizado = conta[1] + valor
 
-    conta[1] += valor
+    salvar_transacao("deposito", valor, numero_conta)
+    atualizar_saldo(numero_conta, valor_atualizado)
 
-    salvar_transacao("deposito", valor, conta[0])
-
-    print(f"Depósito realizado com sucesso! Saldo atual: R$ {conta[1]}")
+    print(f"Depósito realizado com sucesso! Saldo atual: R$ {valor_atualizado}")
 
 def listar_transacoes(numero_conta: int) -> list:
     conta = buscar_conta(numero_conta)

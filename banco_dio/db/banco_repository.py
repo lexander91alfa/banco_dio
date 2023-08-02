@@ -123,5 +123,15 @@ def listar_transacoes() -> list:
         transacoes = cursor.fetchall()
 
         return transacoes
+     
+def atualizar_saldo(saldo: float, conta_id: int) -> None:
+     with sqlite3.connect(DATABASE) as conn:
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            UPDATE contas SET saldo = ? WHERE id = ?;
+        """, (saldo, conta_id))
+
+        conn.commit()
           
           

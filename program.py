@@ -5,11 +5,7 @@ from time import sleep
 from datetime import datetime
 
 conta = None
-numero_saques = 1
-VALOR_MAXIMO_POR_SAQUE = 500
-LIMITE_MAXIMO_SAQUES_DIA = 3
 criar_tabela()
-
 
 while True:
 
@@ -20,22 +16,29 @@ while True:
             print("Opção escolhida: Nova conta")
             
             while True:
-                try:
-                    numero = int(input("Digite o número da conta entre 1000 e 9999: "))
-                except ValueError:
-                    print("Valor inválido!")
-                    continue
+                
+                cpf = input("Digite o CPF do usuário: ")
 
-                match numero:
-                    case numero if numero < 1000 or numero > 9999:
-                        print("Valor inválido!")
-                        continue
-                    case _:
-                        conta_criada = nova_conta(numero)
+                match cpf:
 
-                        if conta_criada:
-                            print("Conta criada com sucesso!")
-                        break
+                        case cpf if len(cpf) != 11:
+                            print("CPF inválido!")
+                            sleep(2)
+                            clear_terminal()
+                            continue
+                        case _:
+                            conta_criada = nova_conta(cpf)
+
+                            if conta_criada:
+                                print("Conta criada com sucesso!")
+                                sleep(2)
+                                break
+                            else:
+                                print("CPF não encontrado!")
+                                sleep(2)
+                                break
+                            
+                            
         case "lc":
             print("Opção escolhida: Listar contas")
 
@@ -47,7 +50,7 @@ while True:
                 continue
         
             for conta in contas:
-                print(f"Conta: {conta[0]} | Saldo: R$ {conta[1]}")
+                print(f"Conta: {conta[1]} | Saldo: R$ {conta[2]}")
 
             sleep(2)
 
@@ -56,15 +59,12 @@ while True:
 
             while True:
 
-                
-                
-
                 while True:
                 
                     cpf = input("Digite o CPF do usuário: ")
                 
                     match cpf:
-                        case cpf if len(cpf) != 11 or cpf.isnumeric() is False:
+                        case cpf if len(cpf) != 11:
                             print("CPF inválido!")
                             sleep(2)
                             clear_terminal()
@@ -154,6 +154,8 @@ while True:
                                     pass
 
                             depositar(conta[0], valor)
+                            print("Depósito de R$ {valor} realizado com sucesso!")
+                            sleep(2)
                             break
                     
                     case "s":
@@ -174,6 +176,8 @@ while True:
                                     pass
 
                             sacar(conta[0], valor)
+                            print("Saque de R$ {valor} realizado com sucesso!")
+                            sleep(2)
                             break
                     
                     case "e":
@@ -181,11 +185,12 @@ while True:
 
                         transacoes = listar_transacoes(conta[0])
 
-                        if transacoes:
-                            print("Nenhuma transação encontrada!")
-                            continue
+                        extrato = layout_extrato_dinamico(transacoes)
 
-                        layout_extrato_dinamico(transacoes)
+                        print(extrato)
+                        sleep(5)
+                        continue
+
 
         case "q":
             print("Opção escolhida: Sair")

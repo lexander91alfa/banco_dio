@@ -62,9 +62,12 @@ def layout_menu_conta() -> str:
     clear_terminal()
     return input(textwrap.dedent(menu))
 
-def layout_extrato_dinamico(transacoes: List[str], saldo: float) -> str:
+def layout_extrato_dinamico(transacoes: List[str]) -> str:
     header = f"Extrato bancário - Banco DIO S.A. - {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}"
     tamanho_header = len(header)
+
+    if not transacoes:
+        transacoes = ["Nenhuma transação encontrada!"]
 
     transacoes_extrato = '\n'.join(transacoes)
 
@@ -75,12 +78,11 @@ def layout_extrato_dinamico(transacoes: List[str], saldo: float) -> str:
 
     {transacoes_extrato}
 
-    Saldo atual: R$ {saldo}
-
     {'-' * tamanho_header}
     """
     clear_terminal()
-    return input(textwrap.dedent(extrato))
+
+    return textwrap.dedent(extrato)
 
 
 def clear_terminal() -> None:
